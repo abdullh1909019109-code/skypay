@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKY PAY | نظام الشحن والتحقق المتطور</title>
+    <title>SKY PAY | متجر الشحن الرقمي</title>
     
-    <!-- مكتبات البرمجة الأساسية -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-
     <style>
+        /* تصميم سينمائي فخم يناسب ذوقك */
         :root {
             --primary: #0ea5e9;
             --dark-bg: #020617;
@@ -26,158 +23,117 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         .main-container {
             background: var(--glass);
             backdrop-filter: blur(15px);
             width: 90%;
-            max-width: 450px;
+            max-width: 400px;
             padding: 40px 25px;
-            border-radius: 35px;
+            border-radius: 30px;
             border: 1px solid rgba(14, 165, 233, 0.3);
             box-shadow: 0 25px 50px rgba(0,0,0,0.6);
             text-align: center;
-            animation: fadeIn 0.8s ease-in-out;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        h1 { color: var(--primary); letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; }
+        h1 { color: var(--primary); letter-spacing: 2px; margin-bottom: 10px; }
         p.desc { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
 
-        .input-group { margin-bottom: 20px; text-align: right; }
-        label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--primary); font-weight: bold; }
-        
         input {
             width: 100%;
             padding: 16px;
-            border-radius: 15px;
+            margin-bottom: 20px;
+            border-radius: 12px;
             border: 1px solid #1e293b;
             background: #0f172a;
             color: white;
             font-size: 18px;
             text-align: center;
             outline: none;
-            transition: 0.3s;
+            box-sizing: border-box;
         }
-
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(14, 165, 233, 0.2); }
 
         .btn {
             background: var(--primary);
             color: white;
             border: none;
             width: 100%;
-            padding: 18px;
-            border-radius: 15px;
+            padding: 16px;
+            border-radius: 12px;
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
-            transition: 0.3s ease;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+            transition: 0.3s;
         }
 
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4); }
 
-        /* واجهات مخفية */
         .hidden { display: none; }
 
         /* لوحة التحكم */
         .dashboard { text-align: right; }
-        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
-        .stat-card { background: #1e293b; padding: 20px; border-radius: 20px; border: 1px solid #334155; text-align: center; }
-        .stat-card small { color: #94a3b8; font-size: 11px; display: block; margin-bottom: 5px; }
+        .stat-card { background: #1e293b; padding: 15px; border-radius: 15px; margin: 10px 0; border: 1px solid #334155; }
+        .stat-card small { color: #94a3b8; display: block; }
         .stat-card span { font-size: 20px; font-weight: bold; color: var(--primary); }
-
-        .service-btn {
-            background: transparent;
-            border: 1px solid #334155;
-            color: white;
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            text-align: right;
-            padding-right: 20px;
-        }
     </style>
 </head>
 <body>
 
     <div class="main-container">
         
-        <!-- المرحلة 1: إدخال الرقم -->
+        <!-- المرحلة 1: طلب الرقم -->
         <div id="step-login">
             <h1>SKY PAY</h1>
-            <p class="desc">أدخل رقم هاتفك لاستلام كود التحقق عبر الواتساب</p>
-            <div class="input-group">
-                <label>رقم الهاتف المعتمد</label>
-                <input type="tel" id="userPhone" placeholder="09XXXXXXXX" value="0935588637">
-            </div>
+            <p class="desc">متجرك الموثوق لشحن الألعاب والخدمات الرقمية</p>
+            <input type="tel" id="userPhone" placeholder="أدخل رقم هاتفك (واتساب)" value="0935588637">
             <button class="btn" onclick="requestWhatsAppOTP()">إرسال كود التحقق 💬</button>
         </div>
 
-        <!-- المرحلة 2: تأكيد الكود -->
+        <!-- المرحلة 2: التأكد من الكود -->
         <div id="step-verify" class="hidden">
-            <h2>تحقق من هويتك</h2>
-            <p class="desc">أدخل الكود المرسل للرقم <b id="phoneDisplay"></b></p>
+            <h2>تحقق من واتسابك</h2>
+            <p class="desc">أدخل الكود المكون من 4 أرقام</p>
             <input type="number" id="otpCode" placeholder="0 0 0 0">
-            <button class="btn" style="margin-top: 20px;" onclick="validateOTP()">تأكيد الدخول</button>
-            <p style="font-size: 12px; margin-top: 15px; cursor: pointer;" onclick="location.reload()">تغيير الرقم؟</p>
+            <button class="btn" onclick="validateOTP()">دخول للمتجر</button>
         </div>
 
-        <!-- المرحلة 3: لوحة تحكم المتجر (GHRYANI STORE) -->
+        <!-- المرحلة 3: لوحة تحكم المستخدم -->
         <div id="step-dashboard" class="hidden dashboard">
-            <h2 style="margin-bottom: 5px;">مرحباً بك 💎</h2>
-            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 25px;">لوحة تحكم المستخدم في SKY PAY</p>
-            
-            <div class="stats">
-                <div class="stat-card"><small>رصيد المحفظة</small><span>0.00 LYD</span></div>
-                <div class="stat-card"><small>طلباتك</small><span>0</span></div>
+            <h2 style="color: var(--primary);">لوحة التحكم ⚙️</h2>
+            <div class="stat-card">
+                <small>رصيد المحفظة الحالي</small>
+                <span>0.00 LYD</span>
             </div>
-
-            <h3>خدمات الشحن المتوفرة:</h3>
-            <button class="service-btn" onclick="alert('خدمة فري فاير قريباً')">💎 شحن فري فاير (Free Fire)</button>
-            <button class="service-btn" onclick="alert('خدمة العملات الرقمية قريباً')">₿ شحن USDT / Binance</button>
-            <button class="service-btn" onclick="alert('خدمة البطاقات قريباً')">💳 بطاقات تداول وألعاب</button>
-
-            <button class="btn" style="background: #ef4444; margin-top: 30px;" onclick="location.reload()">تسجيل الخروج</button>
+            <div class="stat-card">
+                <small>رقم المشترك (ID)</small>
+                <span>#SKY-88637</span>
+            </div>
+            <p style="margin-top: 20px;">📌 <b>خدماتنا:</b></p>
+            <button class="btn" style="background: #1e293b; border: 1px solid #334155; margin-bottom: 10px;">شحن فري فاير 🔥</button>
+            <button class="btn" style="background: #1e293b; border: 1px solid #334155;">شحن USDT ₿</button>
+            
+            <button class="btn" style="background: #ef4444; margin-top: 20px;" onclick="location.reload()">خروج</button>
         </div>
 
     </div>
 
     <script>
-        // إعدادات Firebase الخاصة بمشروعك skypay-fbf0d
-        const firebaseConfig = {
-            apiKey: "AIzaSyBlyp10P6m3B9p7jY4zS5_v8vV7wXyZ1_0",
-            authDomain: "skypay-fbf0d.firebaseapp.com",
-            projectId: "skypay-fbf0d",
-            messagingSenderId: "454005947043",
-            appId: "1:454005947043:web:e000788647c6179374092b"
-        };
-        firebase.initializeApp(firebaseConfig);
-
-        // بيانات بوابة الواتساب من صورتك
-        const WA_INSTANCE = "instance17";
-        const WA_TOKEN = "g60ik45g13vufvbc";
+        // بيانات الربط المأخوذة من صورتك لخدمة الواتساب
+        const WA_INSTANCE = "instance17"; 
+        const WA_TOKEN = "g60ik45g13vufvbc"; 
         let currentOTP = "";
 
-        // 1. وظيفة طلب الكود عبر واتساب
         async function requestWhatsAppOTP() {
             const phone = document.getElementById('userPhone').value;
-            if(phone.length < 9) return alert("يرجى إدخال رقم هاتف صحيح");
+            if(phone.length < 9) return alert("يرجى إدخال رقم صحيح");
 
-            // توليد كود عشوائي
+            // توليد كود التحقق
             currentOTP = Math.floor(1000 + Math.random() * 9000).toString();
-            
-            // الربط البرمجي مع الخدمة لإرسال الرسالة
-            const msgBody = `كود التحقق الخاص بك في متجر SKY PAY هو: ${currentOTP}`;
+            const msgBody = `كود التحقق لمتجر SKY PAY هو: ${currentOTP}`;
             
             try {
-                // إرسال الطلب لخدمة الواتساب
+                // إرسال مباشر للواتساب عبر خدمة Ultramsg الموضحة في صورتك
                 const response = await fetch(`https://api.ultramsg.com/${WA_INSTANCE}/messages/chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -187,23 +143,21 @@
                 if(response.ok) {
                     document.getElementById('step-login').classList.add('hidden');
                     document.getElementById('step-verify').classList.remove('hidden');
-                    document.getElementById('phoneDisplay').innerText = phone;
                 } else {
-                    alert("فشل إرسال الرسالة، تأكد من ربط واتساب في الخدمة");
+                    alert("مشكلة في الخدمة: تأكد أن هاتفك متصل بالإنترنت في Ultramsg");
                 }
             } catch (e) {
-                alert("حدث خطأ في الاتصال بالبوابة");
+                alert("خطأ في الاتصال بالبوابة");
             }
         }
 
-        // 2. وظيفة التحقق من الكود المدخل
         function validateOTP() {
             const enteredCode = document.getElementById('otpCode').value;
             if(enteredCode === currentOTP) {
                 document.getElementById('step-verify').classList.add('hidden');
                 document.getElementById('step-dashboard').classList.remove('hidden');
             } else {
-                alert("الكود غير صحيح! يرجى التأكد من الرسالة المستلمة.");
+                alert("الكود الذي أدخلته غير صحيح!");
             }
         }
     </script>
