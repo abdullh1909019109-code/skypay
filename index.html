@@ -3,207 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKY PAY | الفخامة في الشحن الرقمي</title>
+    <title>SKY PAY | منصة الشحن الرقمي</title>
     
-    <!-- استدعاء المكتبات البرمجية الأساسية لـ Firebase -->
+    <!-- مكتبات Firebase الأساسية -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     
     <style>
-        /* إعدادات الألوان الفخمة لمتجر عبد الله */
         :root {
-            --primary-glow: #0ea5e9;
-            --secondary-glow: #38bdf8;
-            --dark-deep: #020617;
-            --glass-bg: rgba(15, 23, 42, 0.85);
+            --sky-blue: #0ea5e9;
+            --dark-navy: #020617;
+            --luxury-gold: #d4af37;
         }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--dark-deep);
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+        body { 
+            background: var(--dark-navy);
+            background-image: radial-gradient(circle at center, #1e293b, #020617);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; color: white;
         }
 
-        /* خلفية سينمائية متحركة */
-        .animated-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #020617 100%);
-            z-index: -1;
+        .card { 
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(15px);
+            padding: 40px; border-radius: 30px; text-align: center; 
+            box-shadow: 0 0 40px rgba(14, 165, 233, 0.3);
+            width: 90%; max-width: 400px; border: 1px solid rgba(14, 165, 233, 0.2);
         }
 
-        .container {
-            width: 90%;
-            max-width: 420px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 35px;
-            padding: 50px 30px;
-            text-align: center;
-            border: 1px solid rgba(14, 165, 233, 0.2);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-            position: relative;
-        }
+        .logo-box { width: 100%; margin-bottom: 25px; }
+        .logo-box img { width: 100%; border-radius: 15px; box-shadow: 0 0 20px rgba(14, 165, 233, 0.2); }
 
-        /* شعار المتجر */
-        .logo-area {
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 25px;
-            border-radius: 50%;
-            background: #000;
-            border: 3px solid var(--primary-glow);
-            padding: 5px;
-            box-shadow: 0 0 30px rgba(14, 165, 233, 0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+        h2 { color: white; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px; }
 
-        .logo-area img {
-            width: 100%;
-            height: auto;
-            border-radius: 50%;
+        .input-group { margin-bottom: 15px; text-align: right; }
+        input { 
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #1e293b; 
+            background: #0f172a; color: white; font-size: 16px; outline: none; transition: 0.3s;
         }
+        input:focus { border-color: var(--sky-blue); box-shadow: 0 0 10px rgba(14, 165, 233, 0.3); }
 
-        h1 {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            margin: 10px 0;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .btn-action { 
+            background: linear-gradient(45deg, var(--sky-blue), #0284c7);
+            color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; 
+            font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
+        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4); }
 
-        p.subtitle {
-            color: #64748b;
-            font-size: 15px;
-            margin-bottom: 40px;
-            letter-spacing: 1px;
-        }
-
-        /* زر جوجل القوي */
-        .btn-google {
-            background: #ffffff;
-            color: #0f172a;
-            border: none;
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            transition: all 0.4s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-google:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.5);
-            background: #f8fafc;
-        }
-
-        .btn-google img {
-            width: 24px;
-        }
-
-        /* تذييل الصفحة */
-        .footer {
-            margin-top: 40px;
-            font-size: 11px;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* تأثيرات النيون */
-        .neon-line {
-            height: 2px;
-            width: 60px;
-            background: var(--primary-glow);
-            margin: 20px auto;
-            box-shadow: 0 0 10px var(--primary-glow);
-        }
+        .footer { margin-top: 30px; color: #475569; font-size: 11px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-    <div class="animated-bg"></div>
-
-    <div class="container">
-        <div class="logo-area">
-            <!-- استدعاء صورة متجرك -->
-            <img src="17777472004475548121137213819547_950e5f.jpg" alt="SKY PAY Logo">
-        </div>
-        
-        <h1>SKY PAY</h1>
-        <div class="neon-line"></div>
-        <p class="subtitle">المنصة الرائدة لشحن الألعاب والخدمات الرقمية</p>
-
-        <button class="btn-google" id="loginBtn" onclick="googleLogin()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-            تسجيل الدخول عبر GOOGLE
-        </button>
-
-        <div class="footer">
-            GHRYANI STORE & SHADOW PRO PROUDLY PRESENTS
-        </div>
+<div class="card">
+    <div class="logo-box">
+        <!-- اللوغو الجديد اللي بعته -->
+        <img src="17777508602693245464536767746419_939fdf.jpg" alt="SKY PAY Logo">
     </div>
+    
+    <h2>تسجيل الدخول</h2>
 
-    <script>
-        /**
-         * إعدادات الربط SDK لمشروع skypay-fbf0d
-         * تم استخراج هذه البيانات بناءً على صورتك الأخيرة
-         */
-        const firebaseConfig = {
-            apiKey: "AIzaSyBlyp10P6m3B9p7jY4zS5_v8vV7wXyZ1_0", 
-            authDomain: "skypay-fbf0d.firebaseapp.com",
-            projectId: "skypay-fbf0d",
-            storageBucket: "skypay-fbf0d.appspot.com",
-            messagingSenderId: "454005947043", // رقم المشروع من صورتك الأخيرة
-            appId: "1:454005947043:web:e000788647c6179374092b" // معرف التطبيق من صورتك الأخيرة
-        };
+    <div class="input-group">
+        <input type="text" id="userPhone" placeholder="رقم الهاتف (مثال: 091...)">
+    </div>
+    <div class="input-group">
+        <input type="password" id="userPass" placeholder="كلمة السر">
+    </div>
+    
+    <button class="btn-action" onclick="loginWithPhone()">دخول للمتجر</button>
 
-        // بدء تشغيل محرك Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+    <div class="footer">POWERED BY GHRYANI STORE & SHADOW</div>
+</div>
 
-        // وظيفة تسجيل الدخول الاحترافية
-        function googleLogin() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            // استخدام نظام الـ Redirect لضمان التوافق التام مع هواتف Redmi و iPhone
-            auth.signInWithRedirect(provider);
+<script>
+    // بيانات الربط بمشروعك الجديد skypay-fbf0d
+    const firebaseConfig = {
+        apiKey: "AIzaSyBlyp10P6m3B9p7jY4zS5_v8vV7wXyZ1_0", 
+        authDomain: "skypay-fbf0d.firebaseapp.com",
+        projectId: "skypay-fbf0d",
+        storageBucket: "skypay-fbf0d.appspot.com",
+        messagingSenderId: "454005947043", // رقم المشروع من صورتك
+        appId: "1:454005947043:web:e000788647c6179374092b" // معرف التطبيق من صورتك
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    function loginWithPhone() {
+        const phone = document.getElementById('userPhone').value;
+        const pass = document.getElementById('userPass').value;
+
+        if(phone.length < 10) {
+            alert("يرجى إدخال رقم هاتف صحيح");
+            return;
         }
+        
+        // ملاحظة: تسجيل الدخول بالرقم يتطلب تفعيل Phone Auth في Firebase
+        alert("جاري التحقق من الرقم: " + phone);
+        // هنا يتم استكمال برمجة إرسال الكود SMS
+    }
+</script>
 
-        // معالجة النتيجة بعد عودة المستخدم من صفحة جوجل
-        auth.getRedirectResult().then((result) => {
-            if (result && result.user) {
-                console.log("تم تسجيل الدخول:", result.user);
-                alert("مرحباً بك يا بطل " + result.user.displayName + " في متجر SKY PAY!");
-                // هنا يمكنك توجيه المستخدم لصفحة المتجر الرئيسية
-            }
-        }).catch((error) => {
-            console.error("خطأ تقني في Firebase:", error);
-            if (error.code === 'auth/unauthorized-domain') {
-                alert("خطأ: يجب إضافة رابط الموقع 'skypay-ly.netlify.app' في إعدادات Firebase (Authorized Domains).");
-            } else {
-                alert("حدث خطأ أثناء الاتصال بجوجل: " + error.message);
-            }
-        });
-    </script>
 </body>
 </html>
