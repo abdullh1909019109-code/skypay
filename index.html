@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKY PAY | دخول آمن</title>
+    <title>SKY PAY | بوابة الدخول</title>
     <style>
         body { background: #020617; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .card { background: #0f172a; padding: 40px; border-radius: 25px; border: 1px solid #0ea5e9; text-align: center; width: 350px; box-shadow: 0 0 20px rgba(14, 165, 233, 0.2); }
@@ -17,35 +17,37 @@
     <div class="card">
         <h1>SKY PAY</h1>
         <div id="step1">
-            <p>أدخل رقمك لاستلام كود التحقق</p>
+            <p>أدخل رقم الواتساب (09XXXXXXXX)</p>
             <input type="tel" id="phone" value="0935588637">
-            <button class="btn" onclick="sendToWhatsApp()">إرسال عبر الواتساب</button>
+            <button class="btn" onclick="sendOTP()">إرسال كود التحقق 💬</button>
         </div>
 
         <div id="step2" class="hidden">
-            <p>أدخل الكود الذي وصلك</p>
+            <p>أدخل الكود المستلم</p>
             <input type="number" id="otp">
-            <button class="btn" onclick="verify()">دخول</button>
+            <button class="btn" onclick="verify()">دخول للمتجر</button>
         </div>
 
         <div id="dashboard" class="hidden">
-            <h2 style="color:#0ea5e9">لوحة التحكم</h2>
-            <p>مرحباً بك في متجرك الخاص</p>
-            <button class="btn" onclick="location.reload()">خروج</button>
+            <h2 style="color:#0ea5e9">لوحة تحكم المستخدم</h2>
+            <div style="background:#1e293b; padding:15px; border-radius:12px; margin-bottom:15px;">
+                <small>الرصيد: 0.00 LYD</small>
+            </div>
+            <button class="btn" onclick="location.reload()" style="background:#ef4444">خروج</button>
         </div>
     </div>
 
     <script>
-        // البيانات المحدثة بناءً على رسالتك الأخيرة
+        // البيانات المأخوذة من صورتك الأخيرة
         const instanceId = "instance172929"; 
-        const token = "g60ik45g13vufvbc"; 
+        const token = "1ddp9yksyoknvqx9"; 
         let myCode = "";
 
-        async function sendToWhatsApp() {
+        async function sendOTP() {
             const num = document.getElementById('phone').value;
             myCode = Math.floor(1000 + Math.random() * 9000).toString();
             
-            // الرابط البرمجي الصحيح والمباشر لخدمة Ultramsg
+            // الرابط البرمجي الصحيح والمباشر
             const apiUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`;
             const params = new URLSearchParams();
             params.append('token', token);
@@ -61,12 +63,12 @@
                 if(response.ok) {
                     document.getElementById('step1').classList.add('hidden');
                     document.getElementById('step2').classList.remove('hidden');
-                    alert("شيك الواتساب توا، الكود في الطريق!");
+                    alert("تم إرسال الكود بنجاح!");
                 } else {
-                    alert("الخدمة مش مستجيبة، تأكد إنك رابط الهاتف في موقع Ultramsg");
+                    alert("تأكد من ربط الهاتف (المسح الضوئي) في صفحة الحالات بـ UltraMsg");
                 }
             } catch (e) {
-                alert("فشل الاتصال، تأكد من الإنترنت في هاتفك الريدمي");
+                alert("حدث خطأ في الاتصال، تأكد من جودة الإنترنت");
             }
         }
 
@@ -75,7 +77,7 @@
                 document.getElementById('step2').classList.add('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
             } else {
-                alert("الكود غلط!");
+                alert("الكود غير صحيح!");
             }
         }
     </script>
