@@ -1,154 +1,32 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سكاي باي | Sky Pay</title>
-    <!-- استدعاء مكتبات Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    
-    <style>
-        /* التنسيق والألوان السماوية */
-        body { 
-            background: #0c4a6e; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            color: #333;
-        }
-        .container { 
-            max-width: 400px; 
-            width: 90%; 
-            background: #f0f9ff; 
-            padding: 30px; 
-            border-radius: 25px; 
-            border: 4px solid #0ea5e9; 
-            text-align: center; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .logo { 
-            width: 100%; 
-            max-height: 200px; 
-            object-fit: cover; 
-            border-radius: 15px; 
-            margin-bottom: 20px; 
-            border: 2px solid #0ea5e9;
-        }
-        h2 { color: #0369a1; margin-bottom: 5px; }
-        p { color: #0c4a6e; font-size: 14px; margin-bottom: 25px; }
-        
-        .input-group { margin-bottom: 15px; text-align: right; }
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 10px; 
-            border: 1px solid #bae6fd; 
-            box-sizing: border-box; 
-            outline: none;
-        }
-        
-        .btn-main { 
-            background: #0ea5e9; 
-            color: white; 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 12px; 
-            border: none; 
-            font-size: 16px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            transition: 0.3s;
-        }
-        .btn-main:hover { background: #0284c7; }
-        
-        .divider { margin: 20px 0; color: #7dd3fc; position: relative; }
-        
-        .btn-google { 
-            background: white; 
-            border: 1px solid #cbd5e1; 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            font-weight: 500;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <!-- شعار المتجر -->
-    <img src="17777472004475548121137213819547_950e5f.jpg" class="logo" alt="Sky Pay Logo">
-    
-    <h2>متجر سكاي باي 💎</h2>
-    <p>خدمات شحن الألعاب والعملات الرقمية</p>
-
-    <div class="input-group">
-        <input type="email" id="userEmail" placeholder="البريد الإلكتروني">
-    </div>
-    <div class="input-group">
-        <input type="password" id="userPass" placeholder="كلمة السر">
-    </div>
-    
-    <button class="btn-main" onclick="emailLogin()">تسجيل الدخول</button>
-
-    <div class="divider">أو عبر</div>
-
-    <!-- زر جوجل المعتمد -->
-    <button class="btn-google" onclick="googleLogin()">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20">
-        المتابعة باستخدام Google
-    </button>
-</div>
-
 <script>
-    // إعدادات Firebase الخاصة بمشروعك skypay-1b8a8
+    // الإعدادات الرسمية لمشروع سكاي باي من واقع صورتك الأخيرة
     const firebaseConfig = {
-        apiKey: "AIzaSyCVlNRBOZDTBvSnc4HEgCt9WFEvAiTJbP8",
+        apiKey: "AIzaSyCVlNRBOZDTBvSnc4HEgCt9WFEvAiTJbP8", 
         authDomain: "skypay-1b8a8.firebaseapp.com",
         projectId: "skypay-1b8a8",
         storageBucket: "skypay-1b8a8.firebasestorage.app",
-        messagingSenderId: "159800381746",
-        appId: "1:159800381746:web:8204bf47e8ea16d3e3872b"
+        messagingSenderId: "546293200943", // تم التعديل بناءً على صورتك
+        appId: "1:546293200943:web:8204bf47e8ea16d3e3872b" // تم التعديل بناءً على صورتك
     };
 
     // تشغيل Firebase
     firebase.initializeApp(firebaseConfig);
 
-    // وظيفة تسجيل الدخول بجوجل
     function googleLogin() {
         const provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider).then((result) => {
-            alert("مرحباً بك في سكاي باي: " + result.user.displayName);
-            // هنا تقدر تحول الزبون لصفحة الشحن
-        }).catch((error) => {
-            console.error(error);
-            alert("تأكد من إضافة رابط الموقع في 'النطاقات المصرح بها' داخل Firebase");
-        });
+        // استخدام Redirect بدلاً من Popup لأنه أضمن للآيفون
+        firebase.auth().signInWithRedirect(provider);
     }
 
-    // وظيفة تسجيل الدخول بالإيميل
-    function emailLogin() {
-        const email = document.getElementById('userEmail').value;
-        const pass = document.getElementById('userPass').value;
-        
-        if(email && pass) {
-            firebase.auth().signInWithEmailAndPassword(email, pass)
-                .then(() => alert("تم الدخول بنجاح!"))
-                .catch(err => alert("خطأ: " + err.message));
-        } else {
-            alert("يرجى إدخال البيانات");
+    // استقبال نتيجة الدخول بعد العودة من صفحة جوجل
+    firebase.auth().getRedirectResult().then((result) => {
+        if (result && result.user) {
+            alert("أهلاً بك يا بطل في سكاي باي: " + result.user.displayName);
         }
-    }
+    }).catch((error) => {
+        console.error("حدث خطأ:", error.message);
+        if (error.code === 'auth/unauthorized-domain') {
+            alert("تأكد من إضافة الرابط في 'النطاقات المصرح بها'");
+        }
+    });
 </script>
-
-</body>
-</html>
