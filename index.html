@@ -1,32 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سكاي باي | Sky Pay</title>
+    <!-- استدعاء مكتبات Firebase الضرورية -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <style>
+        body { 
+            background: #0c4a6e; 
+            font-family: sans-serif; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            text-align: center; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 350px;
+        }
+        h2 { color: #0369a1; }
+        .btn-google { 
+            background: white; 
+            border: 1px solid #ccc; 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>سكاي باي 💎</h2>
+    <p>مرحباً بك في منصة الشحن</p>
+    
+    <button class="btn-google" onclick="googleLogin()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20">
+        المتابعة باستخدام Google
+    </button>
+</div>
+
 <script>
-    // الإعدادات الرسمية لمشروع سكاي باي من واقع صورتك الأخيرة
+    // الإعدادات المحدثة بناءً على صورتك الأخيرة برقم المشروع 546293200943
     const firebaseConfig = {
         apiKey: "AIzaSyCVlNRBOZDTBvSnc4HEgCt9WFEvAiTJbP8", 
         authDomain: "skypay-1b8a8.firebaseapp.com",
         projectId: "skypay-1b8a8",
         storageBucket: "skypay-1b8a8.firebasestorage.app",
-        messagingSenderId: "546293200943", // تم التعديل بناءً على صورتك
-        appId: "1:546293200943:web:8204bf47e8ea16d3e3872b" // تم التعديل بناءً على صورتك
+        messagingSenderId: "546293200943",
+        appId: "1:546293200943:web:8204bf47e8ea16d3e3872b"
     };
 
-    // تشغيل Firebase
+    // بدء تشغيل Firebase
     firebase.initializeApp(firebaseConfig);
 
     function googleLogin() {
         const provider = new firebase.auth.GoogleAuthProvider();
-        // استخدام Redirect بدلاً من Popup لأنه أضمن للآيفون
+        // التوجيه التلقائي يحل مشكلة المتصفحات في الآيفون
         firebase.auth().signInWithRedirect(provider);
     }
 
-    // استقبال نتيجة الدخول بعد العودة من صفحة جوجل
+    // التأكد من نجاح الدخول بعد العودة للموقع
     firebase.auth().getRedirectResult().then((result) => {
         if (result && result.user) {
-            alert("أهلاً بك يا بطل في سكاي باي: " + result.user.displayName);
+            alert("تم تسجيل دخولك بنجاح: " + result.user.displayName);
         }
     }).catch((error) => {
-        console.error("حدث خطأ:", error.message);
+        console.error(error);
         if (error.code === 'auth/unauthorized-domain') {
-            alert("تأكد من إضافة الرابط في 'النطاقات المصرح بها'");
+            alert("يرجى التأكد من إضافة رابط netlify في النطاقات المصرح بها");
         }
     });
 </script>
+
+</body>
+</html>
