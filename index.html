@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sky Pay | المتجر الرقمي العالمي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #22c55e; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; padding-bottom: 100px; }
+        header { background: var(--card); padding: 20px; text-align: center; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 2000; }
+        .page { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { background: var(--card); border-radius: 20px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .card img { width: 65px; height: 65px; margin-bottom: 10px; }
+        .wallet { background: linear-gradient(135deg, var(--primary), #15803d); padding: 25px; border-radius: 25px; text-align: center; margin-bottom: 25px; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: none; flex-direction: column; padding: 25px; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #334155; }
+        .nav-item { color: #94a3b8; text-align: center; flex: 1; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+    </style>
+</head>
+<body>
+    <header><div style="font-size: 26px; font-weight: 900; color: var(--primary);">Sky Pay</div></header>
+
+    <div id="shop" class="page active-page">
+        <div class="grid">
+            <div class="card" onclick="openMenu('pubg')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbwBJ7ob38PXdV5RJ3D6MW91nxITn5oYKuyH2xNeb4YA&s=10"><h3>ببجي</h3></div>
+            <div class="card" onclick="openMenu('ff')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzxZuJGiI_uXHtKIeUSK8WAn7FDagu1l34_R6zYaU6_A&s=10"><h3>فري فاير</h3></div>
+            <div class="card" onclick="openMenu('itunes')"><i class="fab fa-apple" style="font-size: 50px; color: #fa57c1;"></i><h3>آيتونز</h3></div>
+            <div class="card" onclick="openMenu('usdt')"><i class="fas fa-coins" style="font-size: 50px; color: #26a17b;"></i><h3>USDT</h3></div>
+        </div>
+    </div>
+
+    <div id="acc" class="page">
+        <div class="wallet">
+            <p>رصيد محفظة Sky Pay</p>
+            <h1>0.00 LYD</h1>
+            <button style="background:white; color:var(--primary); border:none; padding:8px 20px; border-radius:20px; font-weight:bold;" onclick="window.location.href='https://wa.me/2189XXXXXXXX'">شحن رصيد</button>
+        </div>
+        <h3>سجل الطلبات</h3>
+        <div id="orders"><p style="text-align:center; color:#94a3b8;">لا توجد طلبات</p></div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div onclick="closeMenu()" style="text-align:left; font-size:30px; color:var(--primary);"><i class="fas fa-times-circle"></i></div>
+        <h2 id="m-title" style="text-align:center;"></h2>
+        <div id="m-list" style="overflow-y:auto;"></div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-item active" onclick="tab('shop', this)"><i class="fas fa-store"></i><br>المتجر</div>
+        <div class="nav-item" onclick="tab('acc', this)"><i class="fas fa-user"></i><br>حسابي</div>
+        <div class="nav-item" onclick="window.location.href='https://wa.me/2189XXXXXXXX'"><i class="fab fa-whatsapp"></i><br>الدعم</div>
+    </div>
+
+    <script>
+        const data = {
+            pubg: { t: "شدات ببجي", i: ["60 UC", "325 UC", "660 UC"] },
+            ff: { t: "جواهر فري فاير", i: ["110 جوهرة", "231 جوهرة"] },
+            itunes: { t: "بطاقات آيتونز", i: ["5$", "10$", "20$"] },
+            usdt: { t: "شراء USDT", i: ["10$", "20$", "50$"] }
+        };
+        function tab(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(id).classList.add('active-page');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+        function openMenu(k) {
+            const m = document.getElementById('modal');
+            document.getElementById('m-title').innerText = data[k].t;
+            document.getElementById('m-list').innerHTML = data[k].i.map(item => `
+                <div style="background:var(--card); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>${item}</span>
+                    <button style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:10px;" onclick="buy('${data[k].t}', '${item}')">طلب</button>
+                </div>`).join('');
+            m.style.display = 'flex';
+        }
+        function closeMenu() { document.getElementById('modal').style.display = 'none'; }
+        function buy(c, i) {
+            const log = document.getElementById('orders');
+            if(log.innerHTML.includes("لا توجد")) log.innerHTML = "";
+            log.innerHTML = `<div style="background:var(--card); padding:10px; border-radius:10px; margin-bottom:5px; border-right:4px solid var(--primary)">${i} - قيد المعالجة</div>` + log.innerHTML;
+            window.location.href = `https://wa.me/2189XXXXXXXX?text=طلب جديد Sky Pay: ${c} - ${i}\nإيميل: abdullh1909019109@gmail.com`;
+        }
+    </script>
+</body>
+</html>
