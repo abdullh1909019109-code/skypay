@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKY PAY | التحكم الكامل</title>
+    <title>SKY PAY | دخول آمن</title>
     <style>
-        :root { --primary: #0ea5e9; --bg: #020617; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: rgba(15, 23, 42, 0.95); padding: 40px; border-radius: 30px; border: 1px solid var(--primary); text-align: center; width: 350px; box-shadow: 0 0 30px rgba(14, 165, 233, 0.2); }
-        h1 { color: var(--primary); margin-bottom: 20px; font-size: 28px; }
-        input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 12px; border: 1px solid #1e293b; background: #0f172a; color: white; text-align: center; font-size: 18px; box-sizing: border-box; }
-        .btn { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4); }
+        body { background: #020617; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #0f172a; padding: 40px; border-radius: 25px; border: 1px solid #0ea5e9; text-align: center; width: 350px; box-shadow: 0 0 20px rgba(14, 165, 233, 0.2); }
+        input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 10px; border: 1px solid #1e293b; background: #020617; color: white; text-align: center; font-size: 18px; box-sizing: border-box; }
+        .btn { background: #0ea5e9; color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .hidden { display: none; }
     </style>
 </head>
@@ -19,72 +16,66 @@
 
     <div class="card">
         <h1>SKY PAY</h1>
-        
-        <!-- واجهة طلب الكود -->
         <div id="step1">
-            <p style="color: #94a3b8;">أدخل رقم واتسابك لتلقي الكود</p>
-            <input type="tel" id="userPhone" placeholder="09XXXXXXXX" value="0935588637">
-            <button class="btn" onclick="sendWhatsApp()">إرسال كود التحقق 💬</button>
+            <p>أدخل رقمك لاستلام كود التحقق</p>
+            <input type="tel" id="phone" value="0935588637">
+            <button class="btn" onclick="sendToWhatsApp()">إرسال عبر الواتساب</button>
         </div>
 
-        <!-- واجهة إدخال الكود -->
         <div id="step2" class="hidden">
-            <p style="color: #94a3b8;">أدخل الكود المكون من 4 أرقام</p>
-            <input type="number" id="otpInput" placeholder="0 0 0 0">
-            <button class="btn" onclick="verifyOTP()">دخول للمتجر</button>
+            <p>أدخل الكود الذي وصلك</p>
+            <input type="number" id="otp">
+            <button class="btn" onclick="verify()">دخول</button>
         </div>
 
-        <!-- لوحة تحكم المستخدم -->
-        <div id="dashboard" class="hidden" style="text-align: right;">
-            <h2 style="color: var(--primary); text-align: center;">لوحة التحكم</h2>
-            <div style="background: #1e293b; padding: 15px; border-radius: 15px; margin-bottom: 10px;">
-                <small style="color: #94a3b8;">رصيدك الحالي</small>
-                <div style="font-size: 24px; font-weight: bold;">0.00 LYD</div>
-            </div>
-            <button class="btn" style="margin-top: 20px;" onclick="location.reload()">تسجيل الخروج</button>
+        <div id="dashboard" class="hidden">
+            <h2 style="color:#0ea5e9">لوحة التحكم</h2>
+            <p>مرحباً بك في متجرك الخاص</p>
+            <button class="btn" onclick="location.reload()">خروج</button>
         </div>
     </div>
 
     <script>
-        // البيانات الجديدة اللي بعثتها توا
-        const INSTANCE_ID = "instance172929"; 
-        const TOKEN = "g60ik45g13vufvbc"; 
-        let generatedCode = "";
+        // البيانات المحدثة بناءً على رسالتك الأخيرة
+        const instanceId = "instance172929"; 
+        const token = "g60ik45g13vufvbc"; 
+        let myCode = "";
 
-        async function sendWhatsApp() {
-            const phone = document.getElementById('userPhone').value;
-            if(phone.length < 9) return alert("الرقم غلط يا غالي");
-
-            generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
-            const message = "كود التحقق لمتجر SKY PAY هو: " + generatedCode;
+        async function sendToWhatsApp() {
+            const num = document.getElementById('phone').value;
+            myCode = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            // الرابط البرمجي الصحيح والمباشر لخدمة Ultramsg
+            const apiUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`;
+            const params = new URLSearchParams();
+            params.append('token', token);
+            params.append('to', num);
+            params.append('body', "كود التحقق لمتجر SKY PAY هو: " + myCode);
 
             try {
-                // إرسال الكود للواتساب مباشرة
-                const response = await fetch(`https://api.ultramsg.com/${INSTANCE_ID}/messages/chat`, {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `token=${TOKEN}&to=${phone}&body=${encodeURIComponent(message)}`
+                    body: params
                 });
 
                 if(response.ok) {
                     document.getElementById('step1').classList.add('hidden');
                     document.getElementById('step2').classList.remove('hidden');
-                    alert("تم إرسال الكود لواتسابك بنجاح!");
+                    alert("شيك الواتساب توا، الكود في الطريق!");
                 } else {
-                    alert("مشكلة في الخدمة، تأكد من ربط هاتفك بـ Ultramsg");
+                    alert("الخدمة مش مستجيبة، تأكد إنك رابط الهاتف في موقع Ultramsg");
                 }
-            } catch (error) {
-                alert("خطأ في الاتصال بالبوابة");
+            } catch (e) {
+                alert("فشل الاتصال، تأكد من الإنترنت في هاتفك الريدمي");
             }
         }
 
-        function verifyOTP() {
-            const userCode = document.getElementById('otpInput').value;
-            if(userCode === generatedCode) {
+        function verify() {
+            if(document.getElementById('otp').value === myCode) {
                 document.getElementById('step2').classList.add('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
             } else {
-                alert("الكود اللي دخلته غلط!");
+                alert("الكود غلط!");
             }
         }
     </script>
