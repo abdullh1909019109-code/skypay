@@ -3,87 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سكاي باي | Sky Pay</title>
-    <!-- استدعاء مكتبات Firebase الضرورية -->
+    <title>سكاي باي | SKY PAY</title>
+    
+    <!-- استدعاء Firebase (النسخة المتوافقة) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     
     <style>
+        /* تصميم سينمائي فخم (Vaporwave/Luxury) */
+        :root {
+            --sky-blue: #0ea5e9;
+            --deep-navy: #020617;
+            --glass: rgba(15, 23, 42, 0.8);
+        }
+
         body { 
-            background: #0c4a6e; 
-            font-family: sans-serif; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
+            background: var(--deep-navy);
+            background-image: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
         }
-        .container { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 20px; 
+
+        .card { 
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 40px; 
+            border-radius: 28px; 
             text-align: center; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 350px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            width: 85%;
+            max-width: 380px;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            animation: fadeIn 0.8s ease-out;
         }
-        h2 { color: #0369a1; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: #000;
+            border-radius: 50%;
+            padding: 5px;
+            border: 2px solid var(--sky-blue);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        h1 { 
+            font-size: 28px; 
+            margin: 10px 0; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(14, 165, 233, 0.8);
+        }
+
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 35px; }
+
         .btn-google { 
             background: white; 
-            border: 1px solid #ccc; 
+            color: #0f172a;
+            border: none; 
             width: 100%; 
-            padding: 12px; 
-            border-radius: 10px; 
+            padding: 16px; 
+            border-radius: 14px; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            gap: 10px;
+            gap: 12px;
             font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-google:hover { 
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.6);
+        }
+
+        .brand-footer {
+            margin-top: 30px;
+            font-size: 10px;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>سكاي باي 💎</h2>
-    <p>مرحباً بك في منصة الشحن</p>
+<div class="card">
+    <div class="logo-container">
+        <!-- صورتك الاحترافية -->
+        <img src="17777472004475548121137213819547_950e5f.jpg" alt="SKY PAY">
+    </div>
+    <h1>SKY PAY</h1>
+    <p>بوابتك الرقمية لشحن الألعاب والعملات</p>
     
     <button class="btn-google" onclick="googleLogin()">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20">
-        المتابعة باستخدام Google
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+        دخول بواسطة GOOGLE
     </button>
+
+    <div class="brand-footer">Powered by Shadow & GHRYANI STORE</div>
 </div>
 
 <script>
-    // الإعدادات المحدثة بناءً على صورتك الأخيرة برقم المشروع 546293200943
+    // الإعدادات الجديدة كلياً بناءً على مشروع skypay-fbf0d
     const firebaseConfig = {
-        apiKey: "AIzaSyCVlNRBOZDTBvSnc4HEgCt9WFEvAiTJbP8", 
-        authDomain: "skypay-1b8a8.firebaseapp.com",
-        projectId: "skypay-1b8a8",
-        storageBucket: "skypay-1b8a8.firebasestorage.app",
-        messagingSenderId: "546293200943",
-        appId: "1:546293200943:web:8204bf47e8ea16d3e3872b"
+        apiKey: "AIzaSyBlyp10P6m3B9p7jY4zS5_v8vV7wXyZ1_0", // ملاحظة: تأكد من نسخ الـ API Key الحقيقي من صفحة الإعدادات
+        authDomain: "skypay-fbf0d.firebaseapp.com",
+        projectId: "skypay-fbf0d",
+        storageBucket: "skypay-fbf0d.appspot.com",
+        messagingSenderId: "454005947043",
+        appId: "1:454005947043:web:e000788647c6179374092b" // المعرف من صورتك
     };
 
-    // بدء تشغيل Firebase
     firebase.initializeApp(firebaseConfig);
 
     function googleLogin() {
         const provider = new firebase.auth.GoogleAuthProvider();
-        // التوجيه التلقائي يحل مشكلة المتصفحات في الآيفون
+        // نظام Redirect لضمان العمل على iPhone X بدون مشاكل حظر النوافذ
         firebase.auth().signInWithRedirect(provider);
     }
 
-    // التأكد من نجاح الدخول بعد العودة للموقع
+    // استقبال البيانات بعد تسجيل الدخول
     firebase.auth().getRedirectResult().then((result) => {
         if (result && result.user) {
-            alert("تم تسجيل دخولك بنجاح: " + result.user.displayName);
+            alert("مرحباً بك يا " + result.user.displayName + " في متجر سكاي باي!");
+            // يمكنك إضافة تحويل لصفحة الأسعار هنا
         }
     }).catch((error) => {
-        console.error(error);
+        console.error("خطأ في الربط:", error);
         if (error.code === 'auth/unauthorized-domain') {
-            alert("يرجى التأكد من إضافة رابط netlify في النطاقات المصرح بها");
+            alert("تنبيه: يجب إضافة رابط الموقع في Authorized Domains داخل Firebase");
         }
     });
 </script>
