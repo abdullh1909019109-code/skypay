@@ -4,72 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sky Pay | سكاي باي</title>
+    <!-- Firebase Legacy SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <style>
-        :root { --sky-blue: #0ea5e9; --dark-bg: #0c4a6e; --card-bg: #f0f9ff; }
-        body { background: var(--dark-bg); color: #333; font-family: sans-serif; margin: 0; padding: 15px; }
-        .container { max-width: 600px; margin: auto; }
-        .logo { text-align: center; color: white; font-size: 2.5rem; font-weight: bold; margin: 20px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 2px solid var(--sky-blue); }
-        select, input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--sky-blue); box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; font-size: 1.1rem; }
-        .btn-google { background: white; color: #444; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-pay { background: var(--sky-blue); color: white; }
-        .price-tag { color: #0369a1; font-weight: bold; font-size: 1.3rem; }
+        :root { --main-sky: #00b4d8; --dark-blue: #03045e; --light-sky: #caf0f8; }
+        body { background: linear-gradient(135deg, var(--dark-blue), var(--main-sky)); color: #333; font-family: 'Segoe UI', Tahoma, sans-serif; min-height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
+        .shop-container { width: 90%; max-width: 450px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); backdrop-filter: blur(10px); border: 2px solid var(--main-sky); }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h1 { color: var(--dark-blue); font-size: 2.2rem; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
+        .card { background: var(--light-sky); border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--main-sky); }
+        select, input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px; border: 1px solid var(--main-sky); outline: none; font-size: 1rem; transition: 0.3s; }
+        select:focus { border-color: var(--dark-blue); box-shadow: 0 0 8px rgba(0, 180, 216, 0.5); }
+        button { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.4s; }
+        .btn-google { background: white; color: #555; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+        .btn-google:hover { background: #f8f9fa; transform: translateY(-2px); }
+        .btn-whatsapp { background: #25d366; color: white; margin-top: 15px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
+        .btn-whatsapp:hover { background: #128c7e; transform: scale(1.02); }
+        .price-box { display: flex; justify-content: space-around; margin-top: 15px; }
+        .price-item { text-align: center; }
+        .price-val { display: block; font-size: 1.2rem; font-weight: bold; color: var(--dark-blue); }
+        .method-badge { background: #fff; padding: 10px; border-radius: 10px; margin: 5px 0; font-family: monospace; border-left: 5px solid var(--main-sky); font-size: 0.9rem; }
         .hidden { display: none; }
-        .method-info { background: #e0f2fe; padding: 12px; border-radius: 10px; margin: 8px 0; border: 1px solid var(--sky-blue); color: #0369a1; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="logo">SKY PAY 💎</div>
+<div class="shop-container">
+    <div class="header">
+        <h1>SKY PAY 💎</h1>
+        <p>خدمات الشحن الفوري</p>
+    </div>
 
-    <!-- تسجيل الدخول -->
-    <div id="login-section" class="card">
-        <h2 style="text-align:center; color: var(--sky-blue)">مرحباً بك</h2>
-        <p style="text-align:center; color: #64748b;">سجل دخولك الآن للبدء</p>
-        <button class="btn-google" onclick="loginWithGoogle()">
+    <!-- Login Section -->
+    <div id="login-ui">
+        <button class="btn-google" onclick="googleLogin()">
             <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20">
-            المتابعة باستخدام Google
+            تسجيل الدخول عبر Google
         </button>
     </div>
 
-    <!-- واجهة المتجر -->
-    <div id="shop-section" class="hidden">
+    <!-- Main Content Section -->
+    <div id="main-ui" class="hidden">
         <div class="card">
-            <h3>أهلاً بك، <span id="user-name" style="color:var(--sky-blue)"></span></h3>
+            <p>مرحباً بك، <b id="display-name" style="color:var(--dark-blue)"></b></p>
             <label>اختر الخدمة:</label>
-            <select id="category" onchange="updateProducts()">
-                <option value="">-- اختر --</option>
-                <option value="usdt">USDT</option>
-                <option value="itunes">iTunes (USA)</option>
-                <option value="ff">جواهر فري فاير</option>
-                <option value="pubg">شدات ببجي</option>
+            <select id="cat" onchange="loadProducts()">
+                <option value="">-- اختر القسم --</option>
+                <option value="usdt">USDT Digital</option>
+                <option value="itunes">iTunes Gift Cards</option>
+                <option value="ff">جواهر Free Fire 💎</option>
+                <option value="pubg">شدات PUBG UC 🔸</option>
             </select>
 
-            <select id="products" onchange="showPrice()">
-                <option value="">-- اختر المنتج --</option>
+            <select id="prod" class="hidden" onchange="showFinal()">
+                <option value="">-- اختر الكمية --</option>
             </select>
 
-            <div id="price-box" class="hidden" style="margin-top:20px; text-align:center;">
-                <p>سعر ليبيانا: <span id="l-price" class="price-tag"></span></p>
-                <p>سعر GPay: <span id="g-price" class="price-tag"></span></p>
+            <div id="price-ui" class="hidden">
+                <div class="price-box">
+                    <div class="price-item">
+                        <small>ليبيانا</small>
+                        <span id="l-val" class="price-val">0</span>
+                    </div>
+                    <div class="price-item">
+                        <small>GPay</small>
+                        <span id="g-val" class="price-val">0</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="pay-box" class="card hidden">
-            <h3 style="color:var(--sky-blue)">بيانات الدفع:</h3>
-            <div class="method-info">Gpay: 102040935588637</div>
-            <div class="method-info">LIBYANA: 0946647327</div>
-            <div class="method-info">Binance: 1125439748</div>
-            <button class="btn-pay" onclick="sendToWhatsApp()">إرسال الطلب عبر واتساب ✅</button>
+        <div id="pay-ui" class="card hidden">
+            <h4 style="margin:0 0 10px 0">بيانات التحويل:</h4>
+            <div class="method-badge">Gpay: 102040935588637</div>
+            <div class="method-badge">LIBYANA: 0946647327</div>
+            <div class="method-badge">Binance: 1125439748</div>
+            <button class="btn-whatsapp" onclick="confirmOrder()">تأكيد الطلب عبر واتساب ✅</button>
         </div>
     </div>
 </div>
 
 <script>
+    // Firebase Setup
     const firebaseConfig = {
         apiKey: "AIzaSyCVlNRBOZDTBvSnc4HEgCt9WFEvAiTJbP8",
         authDomain: "sky-pay-b0b04.firebaseapp.com",
@@ -78,55 +95,56 @@
         messagingSenderId: "159800381746",
         appId: "1:159800381746:web:8204bf47e8ea16d3e3872b"
     };
-
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
 
-    const menu = {
-        usdt: [{n: "5 USDT", l: "60", g: "45"}, {n: "10 USDT", l: "120", g: "90"}, {n: "20 USDT", l: "240", g: "180"}],
+    const prices = {
+        usdt: [{n: "5 USDT", l: "60", g: "45"}, {n: "10 USDT", l: "120", g: "90"}, {n: "50 USDT", l: "600", g: "450"}],
         itunes: [{n: "iTunes 2$", l: "23", g: "9"}, {n: "iTunes 10$", l: "115", g: "45"}, {n: "iTunes 100$", l: "1150", g: "450"}],
-        ff: [{n: "110 جواهر", l: "10.7", g: "8.5"}, {n: "572 جواهر", l: "55", g: "44"}, {n: "2398 جواهر", l: "230", g: "184"}],
+        ff: [{n: "110 Gems", l: "10.7", g: "8.5"}, {n: "572 Gems", l: "55", g: "44"}, {n: "2398 Gems", l: "230", g: "184"}],
         pubg: [{n: "60 UC", l: "10.2", g: "8.3"}, {n: "660 UC", l: "110", g: "89"}, {n: "8100 UC", l: "1340", g: "1090"}]
     };
 
-    function loginWithGoogle() {
+    function googleLogin() {
         const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((res) => {
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('shop-section').classList.remove('hidden');
-            document.getElementById('user-name').innerText = res.user.displayName;
-        }).catch(err => alert("حدث خطأ: " + err.message));
+        firebase.auth().signInWithPopup(provider).then((res) => {
+            document.getElementById('login-ui').classList.add('hidden');
+            document.getElementById('main-ui').classList.remove('hidden');
+            document.getElementById('display-name').innerText = res.user.displayName;
+        }).catch(err => alert("خطأ في الاتصال بجوجل: " + err.message));
     }
 
-    function updateProducts() {
-        const c = document.getElementById('category').value;
-        const p = document.getElementById('products');
-        p.innerHTML = '<option value="">-- اختر المنتج --</option>';
-        if(c) menu[c].forEach((item, i) => {
-            let o = document.createElement('option');
-            o.value = i; o.text = item.n; p.add(o);
-        });
-    }
-
-    function showPrice() {
-        const c = document.getElementById('category').value;
-        const i = document.getElementById('products').value;
-        if(i !== "") {
-            const item = menu[c][i];
-            document.getElementById('l-price').innerText = item.l + " د.ل";
-            document.getElementById('g-price').innerText = item.g + " د.ل";
-            document.getElementById('price-box').classList.remove('hidden');
-            document.getElementById('pay-box').classList.remove('hidden');
+    function loadProducts() {
+        const c = document.getElementById('cat').value;
+        const p = document.getElementById('prod');
+        p.innerHTML = '<option value="">-- اختر الكمية --</option>';
+        if(c) {
+            p.classList.remove('hidden');
+            prices[c].forEach((item, i) => {
+                let o = document.createElement('option');
+                o.value = i; o.text = item.n; p.add(o);
+            });
         }
     }
 
-    function sendToWhatsApp() {
-        const user = document.getElementById('user-name').innerText;
-        const c = document.getElementById('category').value;
-        const i = document.getElementById('products').value;
-        const item = menu[c][i];
-        const msg = `طلب شحن من: ${user}%0Aالمنتج: ${item.n}%0Aالدفع المطلوب: ${item.l} (ليبيانا) أو ${item.g} (GPay)`;
-        window.location.href = `https://wa.me/218946647327?text=${msg}`;
+    function showFinal() {
+        const c = document.getElementById('cat').value;
+        const i = document.getElementById('prod').value;
+        if(i !== "") {
+            const item = prices[c][i];
+            document.getElementById('l-val').innerText = item.l + " د.ل";
+            document.getElementById('g-val').innerText = item.g + " د.ل";
+            document.getElementById('price-ui').classList.remove('hidden');
+            document.getElementById('pay-ui').classList.remove('hidden');
+        }
+    }
+
+    function confirmOrder() {
+        const user = document.getElementById('display-name').innerText;
+        const catName = document.getElementById('cat').options[document.getElementById('cat').selectedIndex].text;
+        const prodName = document.getElementById('prod').options[document.getElementById('prod').selectedIndex].text;
+        const item = prices[document.getElementById('cat').value][document.getElementById('prod').value];
+        const message = `طلب جديد من: ${user}%0Aالخدمة: ${catName}%0Aالكمية: ${prodName}%0Aسعر ليبيانا: ${item.l} د.ل%0Aسعر GPay: ${item.g} د.ل`;
+        window.location.href = `https://wa.me/218946647327?text=${message}`;
     }
 </script>
 </body>
